@@ -1,0 +1,40 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.userprefs
+TestResults/
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Development.json
+
+# Secrets — NEVER commit
+**/appsettings.Production.json
+**/appsettings.Staging.json
+**/*.pfx
+**/*.p12
+.env
+.env.*
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.env
+
+# EF Core
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# Rider / VS Code
+.idea/
+.vscode/
+*.code-workspace

@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/AssetSphere360.API/AssetSphere360.API.csproj" />
+    <Project Path="backend/src/AssetSphere360.Application/AssetSphere360.Application.csproj" />
+    <Project Path="backend/src/AssetSphere360.Domain/AssetSphere360.Domain.csproj" />
+    <Project Path="backend/src/AssetSphere360.Infrastructure/AssetSphere360.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/">
+    <Project Path="backend/tests/AssetSphere360.Tests.Integration/AssetSphere360.Tests.Integration.csproj" />
+    <Project Path="backend/tests/AssetSphere360.Tests.Unit/AssetSphere360.Tests.Unit.csproj" />
+  </Folder>
+</Solution>

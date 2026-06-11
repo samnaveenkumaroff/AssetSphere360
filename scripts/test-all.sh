@@ -1,0 +1,11 @@
+#!/bin/bash
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║  AssetSphere 360 — Full Test Suite  ║"
+echo "╚══════════════════════════════════════╝"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+bash "$SCRIPT_DIR/test-phase1.sh"
+echo ""
+bash "$SCRIPT_DIR/test-phase2.sh"
+echo ""
+bash "$SCRIPT_DIR/test-phase3-4.sh"

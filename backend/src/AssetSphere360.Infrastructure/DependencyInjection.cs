@@ -4,7 +4,6 @@ using AssetSphere360.Infrastructure.Identity;
 using AssetSphere360.Infrastructure.Persistence;
 using AssetSphere360.Infrastructure.Persistence.Repositories;
 using AssetSphere360.Infrastructure.Services;
-using AssetSphere360.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

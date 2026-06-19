@@ -32,5 +32,20 @@ export const routes: Routes = [
     canActivate: [authGuard, managerUpGuard],
     loadComponent: () => import('./features/products/product-form/product-form.component').then(m => m.ProductFormComponent)
   },
+  {
+    path: 'categories',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/categories/category-list.component').then(m => m.CategoryListComponent)
+  },
+  {
+    path: 'suppliers',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/suppliers/supplier-list.component').then(m => m.SupplierListComponent)
+  },
+  {
+    path: 'stock-movements',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/stock-movements/stock-movement-list.component').then(m => m.StockMovementListComponent)
+  },
   { path: '**', redirectTo: '/dashboard' }
 ];

@@ -23,11 +23,25 @@ import { DashboardSummary } from '../../core/models/dashboard.model';
       <span>AssetSphere 360 — Dashboard</span>
       <span class="spacer"></span>
       <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
-      <button mat-icon-button routerLink="/products"><mat-icon>inventory_2</mat-icon></button>
       <button mat-icon-button (click)="authService.logout()"><mat-icon>logout</mat-icon></button>
     </mat-toolbar>
 
     <div class="page-container">
+      <div class="nav-links">
+        <a mat-card class="nav-card" routerLink="/products">
+          <mat-icon>inventory_2</mat-icon><span>Products</span>
+        </a>
+        <a mat-card class="nav-card" routerLink="/categories">
+          <mat-icon>category</mat-icon><span>Categories</span>
+        </a>
+        <a mat-card class="nav-card" routerLink="/suppliers">
+          <mat-icon>local_shipping</mat-icon><span>Suppliers</span>
+        </a>
+        <a mat-card class="nav-card" routerLink="/stock-movements">
+          <mat-icon>swap_horiz</mat-icon><span>Stock Movements</span>
+        </a>
+      </div>
+
       @if (loading()) {
         <div class="spinner-container"><mat-spinner /></div>
       } @else if (summary()) {
@@ -90,6 +104,13 @@ import { DashboardSummary } from '../../core/models/dashboard.model';
     .spacer { flex: 1 1 auto; }
     .user-name { margin-right: 12px; font-size: 14px; }
     .page-container { padding: 24px; max-width: 1200px; margin: 0 auto; }
+    .nav-links { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .nav-card {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 20px; min-width: 140px; text-decoration: none; color: inherit;
+      cursor: pointer; transition: box-shadow 0.2s;
+    }
+    .nav-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .spinner-container { display: flex; justify-content: center; padding: 48px; }
     .stats-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

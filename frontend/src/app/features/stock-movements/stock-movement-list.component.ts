@@ -1,146 +1,172 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatChipsModule } from '@angular/material/chips';
+import { AppShellComponent } from '../../shared/components/app-shell.component';
 import { StockMovementsService } from '../../core/services/stock-movements.service';
 import { ProductsService } from '../../core/services/products.service';
 import { WarehousesService } from '../../core/services/warehouses.service';
 import { ReportsService } from '../../core/services/reports.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { StockMovement, MovementType } from '../../core/models/stock-movement.model';
+import { StockMovement, MovementType, Warehouse } from '../../core/models/stock-movement.model';
 import { Product } from '../../core/models/product.model';
-import { Warehouse } from '../../core/models/stock-movement.model';
 
 const MOVEMENT_TYPES: MovementType[] = ['StockIn', 'StockOut', 'Adjustment', 'Transfer', 'Return'];
 
 @Component({
   selector: 'app-stock-movement-list',
   standalone: true,
-  imports: [
-    CommonModule, RouterLink, ReactiveFormsModule, MatToolbarModule, MatIconModule,
-    MatCardModule, MatTableModule, MatButtonModule, MatFormFieldModule,
-    MatInputModule, MatSelectModule, MatChipsModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, AppShellComponent],
   template: `
-    <mat-toolbar color="primary">
-      <button mat-icon-button routerLink="/dashboard"><mat-icon>arrow_back</mat-icon></button>
-      <span>Stock Movements</span>
-      <span class="spacer"></span>
-      <button mat-button (click)="exportExcel()">
-        <mat-icon>file_download</mat-icon> Export Excel
-      </button>
-    </mat-toolbar>
+    <app-shell></app-shell>
 
-    <div class="page-container">
-      <mat-card class="form-card">
-        <mat-card-header><mat-card-title>Record Stock Movement</mat-card-title></mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="flex-2">
-                <mat-label>Product</mat-label>
-                <mat-select formControlName="productId">
-                  @for (p of products(); track p.id) {
-                    <mat-option [value]="p.id">{{ p.name }} ({{ p.sku }})</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Warehouse</mat-label>
-                <mat-select formControlName="warehouseId">
-                  @for (w of warehouses(); track w.id) {
-                    <mat-option [value]="w.id">{{ w.name }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Type</mat-label>
-                <mat-select formControlName="movementType">
-                  @for (t of movementTypes; track t) {
-                    <mat-option [value]="t">{{ t }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+    <main class="as-main">
+      <div class="as-page-header">
+        <div>
+          <h1 class="as-page-title">Stock Movements</h1>
+          <p class="as-page-subtitle">{{ movements().length }} movements recorded</p>
+        </div>
+        <button class="as-btn as-btn--ghost" (click)="exportExcel()">
+          <mat-icon>file_download</mat-icon> Export Excel
+        </button>
+      </div>
+
+      <div class="as-card as-form-card">
+        <div class="as-form-card__title">Record Movement</div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="as-form-row">
+            <div class="as-field as-field--grow-2">
+              <label class="as-label">Product</label>
+              <select class="as-input" formControlName="productId">
+                <option value="" disabled>Select product</option>
+                @for (p of products(); track p.id) {
+                  <option [value]="p.id">{{ p.name }} ({{ p.sku }})</option>
+                }
+              </select>
             </div>
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Quantity</mat-label>
-                <input matInput type="number" formControlName="quantity" min="0.01" step="0.01" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Unit Cost (₹)</mat-label>
-                <input matInput type="number" formControlName="unitCost" min="0" step="0.01" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Reference # (optional)</mat-label>
-                <input matInput formControlName="referenceNumber" />
-              </mat-form-field>
+            <div class="as-field as-field--grow">
+              <label class="as-label">Warehouse</label>
+              <select class="as-input" formControlName="warehouseId">
+                <option value="" disabled>Select warehouse</option>
+                @for (w of warehouses(); track w.id) {
+                  <option [value]="w.id">{{ w.name }}</option>
+                }
+              </select>
             </div>
-            <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || saving()">
-              {{ saving() ? 'Recording...' : 'Record Movement' }}
-            </button>
-          </form>
-        </mat-card-content>
-      </mat-card>
+            <div class="as-field as-field--grow">
+              <label class="as-label">Type</label>
+              <select class="as-input" formControlName="movementType">
+                @for (t of movementTypes; track t) {
+                  <option [value]="t">{{ t }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="as-form-row">
+            <div class="as-field as-field--grow">
+              <label class="as-label">Quantity</label>
+              <input class="as-input as-mono" type="number" formControlName="quantity" min="0.01" step="0.01" />
+            </div>
+            <div class="as-field as-field--grow">
+              <label class="as-label">Unit Cost (₹)</label>
+              <input class="as-input as-mono" type="number" formControlName="unitCost" min="0" step="0.01" />
+            </div>
+            <div class="as-field as-field--grow">
+              <label class="as-label">Reference #</label>
+              <input class="as-input" formControlName="referenceNumber" placeholder="Optional" />
+            </div>
+          </div>
+          <button class="as-btn as-btn--primary" type="submit" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Recording…' : 'Record Movement' }}
+          </button>
+        </form>
+      </div>
 
       @if (loading()) {
-        <p class="empty-state">Loading...</p>
+        <div class="as-loading">Loading...</div>
       } @else if (movements().length === 0) {
-        <p class="empty-state">No stock movements recorded yet.</p>
+        <div class="as-card as-empty-state">
+          <mat-icon>swap_horiz</mat-icon>
+          <p>No stock movements recorded yet.</p>
+        </div>
       } @else {
-        <table mat-table [dataSource]="movements()" class="full-width-table">
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let m">{{ m.movementDate | date:'short' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="product">
-            <th mat-header-cell *matHeaderCellDef>Product</th>
-            <td mat-cell *matCellDef="let m">{{ m.productName }} ({{ m.productSku }})</td>
-          </ng-container>
-          <ng-container matColumnDef="warehouse">
-            <th mat-header-cell *matHeaderCellDef>Warehouse</th>
-            <td mat-cell *matCellDef="let m">{{ m.warehouseName }}</td>
-          </ng-container>
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let m">
-              <mat-chip [color]="m.movementType === 'StockOut' ? 'warn' : 'primary'" highlighted>
-                {{ m.movementType }}
-              </mat-chip>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="quantity">
-            <th mat-header-cell *matHeaderCellDef>Quantity</th>
-            <td mat-cell *matCellDef="let m">{{ m.quantity }}</td>
-          </ng-container>
-          <ng-container matColumnDef="reference">
-            <th mat-header-cell *matHeaderCellDef>Reference</th>
-            <td mat-cell *matCellDef="let m">{{ m.referenceNumber || '—' }}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="columns"></tr>
-          <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-        </table>
+        <div class="as-card">
+          <table class="as-table">
+            <thead>
+              <tr><th>Date</th><th>Product</th><th>Warehouse</th><th>Type</th><th class="as-table__right">Qty</th><th>Reference</th></tr>
+            </thead>
+            <tbody>
+              @for (m of movements(); track m.id) {
+                <tr>
+                  <td class="as-table__muted">{{ m.movementDate | date:'MMM d, h:mm a' }}</td>
+                  <td>{{ m.productName }} <span class="as-mono as-table__muted">({{ m.productSku }})</span></td>
+                  <td class="as-table__muted">{{ m.warehouseName }}</td>
+                  <td><span class="as-type-chip" [class]="'as-type-chip--' + m.movementType.toLowerCase()">{{ m.movementType }}</span></td>
+                  <td class="as-mono as-table__right">{{ m.quantity }}</td>
+                  <td class="as-table__muted">{{ m.referenceNumber || '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       }
-    </div>
+    </main>
   `,
   styles: [`
-    .spacer { flex: 1 1 auto; }
-    .page-container { padding: 24px; max-width: 1100px; margin: 0 auto; }
-    .form-card { margin-bottom: 16px; }
-    .form-row { display: flex; gap: 16px; }
-    .flex-1 { flex: 1; }
-    .flex-2 { flex: 2; }
-    .full-width-table { width: 100%; }
-    .empty-state { text-align: center; color: #666; padding: 32px; }
+    .as-main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+    .as-loading { padding: 48px; text-align: center; color: var(--as-ink-muted); }
+    .as-page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+    .as-page-title { font-size: 22px; font-weight: 600; color: var(--as-ink-text); margin: 0; letter-spacing: -0.01em; }
+    .as-page-subtitle { font-size: 13px; color: var(--as-ink-muted); margin: 4px 0 0; }
+
+    .as-form-card { padding: 18px; margin-bottom: 16px; }
+    .as-form-card__title { font-size: 13px; font-weight: 600; color: var(--as-ink-text); margin-bottom: 14px; }
+    .as-form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .as-field { display: flex; flex-direction: column; gap: 4px; }
+    .as-field--grow { flex: 1; }
+    .as-field--grow-2 { flex: 2; }
+    .as-label { font-size: 11px; font-weight: 600; color: var(--as-ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .as-input {
+      border: 1px solid var(--as-border); border-radius: 6px; padding: 9px 12px; font-size: 13px;
+      font-family: inherit; background: var(--as-paper); color: var(--as-ink-text);
+    }
+    .as-input:focus { outline: 2px solid var(--as-ink-900); outline-offset: -1px; border-color: var(--as-ink-900); }
+
+    .as-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px;
+      border-radius: 6px; font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    }
+    .as-btn mat-icon { font-size: 18px; height: 18px; width: 18px; }
+    .as-btn--primary { background: var(--as-ink-900); color: white; }
+    .as-btn--primary:hover { background: var(--as-ink-800); }
+    .as-btn--ghost { background: white; border: 1px solid var(--as-border); color: var(--as-ink-text); }
+    .as-btn--ghost:hover { background: var(--as-paper-dim); }
+    .as-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .as-empty-state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px; color: var(--as-ink-muted); }
+    .as-empty-state mat-icon { font-size: 32px; height: 32px; width: 32px; opacity: 0.4; }
+
+    .as-table { width: 100%; border-collapse: collapse; }
+    .as-table thead th {
+      text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--as-ink-muted); font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--as-border);
+      background: var(--as-paper-dim);
+    }
+    .as-table tbody td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--as-border); }
+    .as-table tbody tr:last-child td { border-bottom: none; }
+    .as-table tbody tr:hover { background: var(--as-paper-dim); }
+    .as-table__right { text-align: right; }
+    .as-table__muted { color: var(--as-ink-muted); }
+
+    .as-type-chip {
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .as-type-chip--stockin { background: var(--as-stock-in-bg); color: var(--as-stock-in); }
+    .as-type-chip--stockout { background: var(--as-stock-out-bg); color: var(--as-stock-out); }
+    .as-type-chip--adjustment { background: var(--as-adjustment-bg); color: var(--as-adjustment); }
+    .as-type-chip--transfer { background: var(--as-transfer-bg); color: var(--as-transfer); }
+    .as-type-chip--return { background: var(--as-return-bg); color: var(--as-return); }
   `]
 })
 export class StockMovementListComponent implements OnInit {
@@ -157,7 +183,6 @@ export class StockMovementListComponent implements OnInit {
   readonly loading = signal(true);
   readonly saving = signal(false);
   readonly movementTypes = MOVEMENT_TYPES;
-  readonly columns = ['date', 'product', 'warehouse', 'type', 'quantity', 'reference'];
 
   readonly form = this.fb.group({
     productId: ['', [Validators.required]],
@@ -187,12 +212,8 @@ export class StockMovementListComponent implements OnInit {
     this.saving.set(true);
     const value = this.form.getRawValue();
     this.stockMovementsService.create({
-      productId: value.productId!,
-      warehouseId: value.warehouseId!,
-      movementType: value.movementType!,
-      quantity: value.quantity!,
-      unitCost: value.unitCost!,
-      referenceNumber: value.referenceNumber || undefined
+      productId: value.productId!, warehouseId: value.warehouseId!, movementType: value.movementType!,
+      quantity: value.quantity!, unitCost: value.unitCost!, referenceNumber: value.referenceNumber || undefined
     }).subscribe({
       next: () => {
         this.saving.set(false);

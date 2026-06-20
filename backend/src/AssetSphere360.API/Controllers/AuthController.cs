@@ -124,4 +124,29 @@ public class AuthController(
         }
         return NoContent();
     }
+
+    [HttpGet("me")]
+    [Authorize]
+    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Me()
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null) return Unauthorized();
+
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null) return Unauthorized();
+
+        var roles = await userManager.GetRolesAsync(user);
+        return Ok(new
+        {
+            userId = user.Id.ToString(),
+            email = user.Email,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            fullName = user.FullName,
+            roles,
+            createdAt = user.CreatedAt,
+            lastLoginAt = user.LastLoginAt
+        });
+    }
 }

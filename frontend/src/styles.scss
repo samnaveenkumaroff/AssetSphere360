@@ -1,38 +1,134 @@
 @use '@angular/material' as mat;
 
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
-}
-
-* {
-  box-sizing: border-box;
-}
-
+// ── AssetSphere 360 Design Tokens ──
+// Subject: warehouse/inventory operations — control-room precision, not consumer SaaS softness.
 :root {
+  // Ink navy anchor (not generic Material blue)
+  --as-ink-900: #0F1729;
+  --as-ink-800: #1A2540;
+  --as-ink-700: #2A3655;
+
+  // Amber accent — warehouse caution signage, earned not decorative
+  --as-amber-500: #F59E0B;
+  --as-amber-600: #D97706;
+  --as-amber-100: #FEF3C7;
+
+  // Warm neutrals instead of stark white/gray
+  --as-paper: #F8F7F4;
+  --as-paper-dim: #EFEDE7;
+  --as-border: #E2DFD6;
+  --as-ink-text: #1C1917;
+  --as-ink-muted: #6B6459;
+
+  // Functional status — warehouse semantics
+  --as-stock-in: #166534;
+  --as-stock-in-bg: #DCFCE7;
+  --as-stock-out: #9F1239;
+  --as-stock-out-bg: #FFE4E6;
+  --as-adjustment: #92660B;
+  --as-adjustment-bg: #FEF3C7;
+  --as-transfer: #1E40AF;
+  --as-transfer-bg: #DBEAFE;
+  --as-return: #5B21B6;
+  --as-return-bg: #EDE9FE;
+  --as-critical: #B91C1C;
+  --as-critical-bg: #FEE2E2;
+
   @include mat.theme((
     color: (
       theme-type: light,
       primary: mat.$blue-palette,
-      tertiary: mat.$cyan-palette,
+      tertiary: mat.$orange-palette,
     ),
-    typography: Roboto,
+    typography: (
+      plain-family: 'Inter',
+      brand-family: 'Inter',
+      bold-weight: 600,
+      medium-weight: 500,
+      regular-weight: 400,
+    ),
     density: 0,
   ));
+
+  // Override Material's primary with our ink navy
+  --mat-sys-primary: var(--as-ink-900);
+  --mat-sys-on-primary: #FFFFFF;
+  --mat-sys-surface: var(--as-paper);
+  --mat-sys-on-surface: var(--as-ink-text);
+  --mat-sys-surface-container: #FFFFFF;
+  --mat-sys-outline: var(--as-border);
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
 
 body {
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+  background-color: var(--as-paper);
+  color: var(--as-ink-text);
 }
 
+// Monospace utility for data: SKUs, quantities, codes, currency
+.as-mono {
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Courier New', monospace;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+// Snackbar branding
 .snackbar-success {
-  --mdc-snackbar-container-color: #2e7d32;
+  --mdc-snackbar-container-color: var(--as-stock-in);
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+.snackbar-error {
+  --mdc-snackbar-container-color: var(--as-critical);
   --mdc-snackbar-supporting-text-color: #ffffff;
 }
 
-.snackbar-error {
-  --mdc-snackbar-container-color: #c62828;
-  --mdc-snackbar-supporting-text-color: #ffffff;
+// Quiet card style — 1px border, no heavy shadow (control-room precision, not SaaS softness)
+.as-card {
+  background: #FFFFFF;
+  border: 1px solid var(--as-border);
+  border-radius: 8px;
+  box-shadow: none;
 }
+
+// Dense table — operators scan many rows fast, no faux-spacious padding
+.as-table-dense .mat-mdc-cell,
+.as-table-dense .mat-mdc-header-cell {
+  padding: 10px 12px !important;
+  font-size: 13px;
+}
+
+// Stock gauge — the signature element: at-a-glance stock health
+.as-stock-gauge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.as-stock-gauge__track {
+  width: 48px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--as-paper-dim);
+  overflow: hidden;
+  position: relative;
+}
+
+.as-stock-gauge__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.as-stock-gauge__fill--healthy { background: var(--as-stock-in); }
+.as-stock-gauge__fill--warn { background: var(--as-amber-500); }
+.as-stock-gauge__fill--critical { background: var(--as-critical); }

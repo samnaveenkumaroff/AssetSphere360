@@ -66,6 +66,10 @@ export class AuthService {
     return localStorage.getItem(REFRESH_TOKEN_KEY);
   }
 
+  getProfile(): Observable<import('../models/profile.model').UserProfile> {
+    return this.http.get<import('../models/profile.model').UserProfile>(`${this.apiUrl}/me`);
+  }
+
   private persistSession(response: AuthResponse): void {
     localStorage.setItem(ACCESS_TOKEN_KEY, response.accessToken);
     localStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);

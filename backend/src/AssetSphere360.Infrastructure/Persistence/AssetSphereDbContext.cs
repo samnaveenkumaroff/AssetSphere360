@@ -14,6 +14,10 @@ public class AssetSphereDbContext(DbContextOptions<AssetSphereDbContext> options
     public DbSet<Supplier> Suppliers => Set<Supplier>();
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<PurchaseOrderLine> PurchaseOrderLines => Set<PurchaseOrderLine>();
+    public DbSet<SalesOrder> SalesOrders => Set<SalesOrder>();
+    public DbSet<SalesOrderLine> SalesOrderLines => Set<SalesOrderLine>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,5 +37,9 @@ public class AssetSphereDbContext(DbContextOptions<AssetSphereDbContext> options
         modelBuilder.Entity<Supplier>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Warehouse>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<StockMovement>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<PurchaseOrder>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<PurchaseOrderLine>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<SalesOrder>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<SalesOrderLine>().HasQueryFilter(e => !e.IsDeleted);
     }
 }

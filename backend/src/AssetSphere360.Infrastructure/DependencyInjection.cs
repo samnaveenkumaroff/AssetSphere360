@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IReportService, ReportService>();
+        services.AddScoped<IOrderNumberService, OrderNumberService>();
 
         return services;
     }

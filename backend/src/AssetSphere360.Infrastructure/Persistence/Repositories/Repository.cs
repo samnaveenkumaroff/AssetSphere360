@@ -74,6 +74,22 @@ public class Repository<T>(AssetSphereDbContext context) : IRepository<T> where 
             return (IQueryable<T>)q;
         }
 
+        if (typeof(T) == typeof(AssetSphere360.Domain.Entities.PurchaseOrder))
+        {
+            var q = (IQueryable<AssetSphere360.Domain.Entities.PurchaseOrder>)query;
+            q = q.Include(p => p.Supplier).Include(p => p.Warehouse)
+                 .Include(p => p.Lines).ThenInclude(l => l.Product);
+            return (IQueryable<T>)q;
+        }
+
+        if (typeof(T) == typeof(AssetSphere360.Domain.Entities.SalesOrder))
+        {
+            var q = (IQueryable<AssetSphere360.Domain.Entities.SalesOrder>)query;
+            q = q.Include(s => s.Warehouse)
+                 .Include(s => s.Lines).ThenInclude(l => l.Product);
+            return (IQueryable<T>)q;
+        }
+
         return query;
     }
 }

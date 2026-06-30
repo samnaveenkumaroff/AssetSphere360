@@ -52,5 +52,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
   },
+  {
+    path: 'purchase-orders',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/purchase-orders/purchase-order-list.component').then(m => m.PurchaseOrderListComponent)
+  },
+  {
+    path: 'sales-orders',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/sales-orders/sales-order-list.component').then(m => m.SalesOrderListComponent)
+  },
   { path: '**', redirectTo: '/dashboard' }
 ];

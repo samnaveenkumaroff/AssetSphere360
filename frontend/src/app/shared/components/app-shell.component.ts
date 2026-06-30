@@ -48,6 +48,12 @@ import { AuthService } from '../../core/services/auth.service';
       <a routerLink="/stock-movements" routerLinkActive="as-nav__item--active" class="as-nav__item">
         <mat-icon>swap_horiz</mat-icon><span>Movements</span>
       </a>
+      <a routerLink="/purchase-orders" routerLinkActive="as-nav__item--active" class="as-nav__item">
+        <mat-icon>shopping_cart</mat-icon><span>Purchase Orders</span>
+      </a>
+      <a routerLink="/sales-orders" routerLinkActive="as-nav__item--active" class="as-nav__item">
+        <mat-icon>point_of_sale</mat-icon><span>Sales Orders</span>
+      </a>
     </nav>
   `,
   styles: [`
